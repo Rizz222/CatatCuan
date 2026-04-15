@@ -178,7 +178,7 @@ if (localStorage.getItem('theme') === 'dark') {
     if (logoAplikasi) logoAplikasi.src = 'img/catat cuan putih.png'; 
     if (logoLogin) logoLogin.src = 'img/catat cuan putih.png'; 
 } else {
-    if (logoAplikasi) logoAplikasi.src = 'img/catat cuan hitam.png';
+    if (logoAplikasi) logoAplikasi.src = 'img/catat cuan hitam.png'; 
     if (logoLogin) logoLogin.src = 'img/catat cuan hitam.png'; 
 }
 
