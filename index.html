@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CatatCuan - Catatan Keuangan</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <section id="login-section" class="login-container">
+        <div class="login-box">
+            <div class="login-brand">
+                <img src="img/catat cuan hitam.png" alt="Logo CatatCuan" id="logo-login" class="login-brand-logo">
+                <h1>CatatCuan</h1>
+            </div>
+            <p>Catat keuangan tanpa ribet. Ayo catat keuanganmu!</p>
+            <button id="btn-google-login" class="btn-google">
+                <b>G</b> Masuk dengan Google
+            </button>
+        </div>
+    </section>
+
+    <div id="app-section" class="app-container" style="display: none;">
+        
+        <nav class="sidebar">
+            <div class="brand">
+                <img src="img/catat cuan hitam.png" alt="Logo CatatCuan" class="brand-logo" id="logo-aplikasi">
+                <h2>CatatCuan</h2>
+            </div>
+            <ul class="nav-links">
+                <li class="nav-link active" data-target="view-dashboard">
+                    <span class="material-symbols-rounded">home</span> <p>Home</p>
+                </li>
+                <li class="nav-link" data-target="view-riwayat">
+                    <span class="material-symbols-rounded">receipt_long</span> <p>Riwayat</p>
+                </li>
+                <li class="nav-link" data-target="view-laporan">
+                    <span class="material-symbols-rounded">donut_large</span> <p>Laporan</p>
+                </li>
+                <li class="nav-link" data-target="view-profil">
+                    <span class="material-symbols-rounded">person</span> <p>Profil</p>
+                </li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            
+            <section id="view-dashboard" class="view-section active">
+                <header class="page-header header-with-options">
+                    <h2>Ringkasan Keuangan</h2>
+                    <div class="dropdown-container">
+                        <button class="btn-dots btn-action" title="Opsi Lanjutan">&#8942;</button>
+                        <div class="dropdown-menu">
+                            <button class="dropdown-item text-danger" id="btn-reset-data">Reset Semua Saldo</button>
+                        </div>
+                    </div>
+                </header>
+                
+                <div class="card balance-highlight" id="card-saldo-utama">
+                    <div class="balance-clickable-area" id="btn-expand-saldo">
+                        <div class="balance-content">
+                            <h3>Sisa Saldo Kamu</h3>
+                            <h2 id="total-saldo">Rp 0</h2>
+                            <div class="balance-badge" id="balance-badge-trend">Memuat...</div>
+                        </div>
+                        <span class="material-symbols-rounded expand-icon" id="saldo-expand-icon">expand_more</span>
+                    </div>
+
+                    <div class="balance-details" id="saldo-details" style="display: none;">
+                        <hr class="dashed-line-white">
+                        <div class="trend-header">
+                            <span>Grafik Tren Saldo & Pengeluaran</span>
+                            <select id="filter-trend-saldo" class="select-trend">
+                                <option value="7">7 Hari Terakhir</option>
+                                <option value="30">30 Hari Terakhir</option>
+                            </select>
+                        </div>
+                        <div class="balance-chart-wrapper">
+                            <canvas id="chart-saldo-utama"></canvas>
+                        </div>
+                        <div class="balance-stats-grid">
+                            <div class="stat-box">
+                                <p>Total Pemasukan</p>
+                                <h4 id="detail-total-masuk" style="color: #2ecc71;">Rp 0</h4>
+                            </div>
+                            <div class="stat-box">
+                                <p>Total Pengeluaran</p>
+                                <h4 id="detail-total-keluar" style="color: #ff7675;">Rp 0</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-group-inline">
+                    <div class="mini-card income">
+                        <span class="material-symbols-rounded">arrow_downward</span>
+                        <div class="mini-card-text">
+                            <h3>Pemasukan</h3>
+                            <p id="total-masuk">Rp 0</p>
+                        </div>
+                    </div>
+                    <div class="mini-card expense">
+                        <span class="material-symbols-rounded">arrow_upward</span>
+                        <div class="mini-card-text">
+                            <h3>Pengeluaran</h3>
+                            <p id="total-keluar">Rp 0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="transaction-form">
+                    <h2 style="display: flex; align-items: center; gap: 10px; font-size: 18px;">
+                        <span class="material-symbols-rounded" style="color: #3498db;">edit_square</span>
+                        Catat Transaksi Baru
+                    </h2>
+                    <form id="form-transaksi">
+                        <div class="form-group">
+                            <label>Jenis</label>
+                            <select id="jenis" required>
+                                <option value="pengeluaran">Pengeluaran</option>
+                                <option value="pemasukan">Pemasukan</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Kategori</label>
+                            <select id="kategori" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nominal (Rp)</label>
+                            <input type="number" id="nominal" placeholder="Contoh: 15000" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Catatan</label>
+                            <input type="text" id="catatan" placeholder="Contoh: Beli Ayam Geprek">
+                        </div>
+                        <button type="submit" class="btn-submit">Simpan Transaksi</button>
+                    </form>
+                </div>
+            </section>
+
+            <section id="view-riwayat" class="view-section">
+                <header class="page-header">
+                    <h2>Riwayat Transaksi</h2>
+                </header>
+                <div class="history-container">
+                    <ul id="transaction-list" class="transaction-list"></ul>
+                </div>
+            </section>
+
+            <section id="view-anggaran" class="view-section">
+                <header class="page-header header-with-options">
+                    <h2>Batas Pengeluaran</h2>
+                    <button id="btn-hapus-anggaran" class="btn-submit" style="display: none; width: auto; padding: 6px 12px; margin-top: 0; background-color: #e74c3c; font-size: 13px;">Hapus Limit</button>
+                </header>
+                
+                <div id="container-form-anggaran" class="transaction-form" style="border: 2px dashed #f39c12;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <span class="material-symbols-rounded" style="font-size: 50px; color: #f39c12;">security</span>
+                        <h3 style="margin-top: 10px;">Kendalikan Pengeluaranmu</h3>
+                        <p style="font-size: 13px; color: var(--text-muted);">Pengeluaran akan dihitung persis mulai dari detik kamu mengaktifkan fitur ini. Transaksi lama tidak akan dihitung.</p>
+                    </div>
+                    <form id="form-anggaran">
+                        <div class="form-group">
+                            <label>Pilih Periode Waktu</label>
+                            <select id="periode-anggaran" required>
+                                <option value="mingguan">Mingguan (7 Hari)</option>
+                                <option value="bulanan">Bulanan (1 Bulan)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Batas Maksimal Pengeluaran (Rp)</label>
+                            <input type="number" id="nominal-anggaran" placeholder="Contoh: 2000000" required>
+                        </div>
+                        <button type="submit" class="btn-submit" style="background-color: #f39c12;">Aktifkan Pemantau Anggaran</button>
+                    </form>
+                </div>
+
+                <div id="container-anggaran-aktif" style="display: none;">
+                    <div class="budget-card">
+                        <div class="budget-header">
+                            <div>
+                                <h3 style="font-size: 14px; color: var(--text-muted); font-weight: 500;">Anggaran <span id="label-periode-tipe">Bulanan</span></h3>
+                                <p id="teks-periode-anggaran" style="font-size: 12px; font-weight: bold; color: #3498db; margin-top: 2px;">Memuat tanggal...</p>
+                                <h2 id="teks-status-anggaran" style="font-size: 20px; font-weight: bold; margin-top: 8px;">Aman Terkendali</h2>
+                            </div>
+                            <span class="material-symbols-rounded budget-icon" id="icon-status-anggaran">verified</span>
+                        </div>
+
+                        <div style="margin: 25px 0;">
+                            <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 8px;">
+                                <span id="teks-terpakai-anggaran">Terpakai: Rp 0</span>
+                                <span id="teks-persen-anggaran">0%</span>
+                            </div>
+                            <div class="budget-progress-bg">
+                                <div id="budget-progress-fill" class="budget-progress-fill safe"></div>
+                            </div>
+                            <div style="text-align: right; font-size: 12px; color: var(--text-muted); margin-top: 8px;">
+                                Batas Limit: <strong id="teks-limit-anggaran">Rp 0</strong>
+                            </div>
+                        </div>
+
+                        <div class="budget-sisa-box">
+                            Sisa dana yang boleh digunakan: <strong id="teks-sisa-anggaran">Rp 0</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-tabungan" class="view-section">
+                <header class="page-header header-with-options">
+                    <h2>Target Tabungan</h2>
+                    <button id="btn-tampil-form-tabungan" class="btn-submit" style="width: auto; padding: 8px 15px; margin-top: 0; background-color: #2ecc71; font-size: 14px;">+ Buat Target</button>
+                </header>
+                
+                <div id="container-form-tabungan" class="transaction-form" style="display: none; margin-bottom: 25px; border: 2px dashed #2ecc71;">
+                    <h2>Buat Target Baru</h2>
+                    <form id="form-tabungan">
+                        <div class="form-group">
+                            <label>Nama Impian / Tujuan</label>
+                            <input type="text" id="nama-tabungan" placeholder="Contoh: Beli Laptop, Liburan..." required>
+                        </div>
+                        <div class="form-group">
+                            <label>Target Dana (Rp)</label>
+                            <input type="number" id="target-tabungan" placeholder="Contoh: 5000000" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Uang Terkumpul Saat Ini (Rp) - Opsional</label>
+                            <input type="number" id="awal-tabungan" placeholder="Contoh: 500000 (Kosongkan jika 0)">
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" id="btn-batal-tabungan" class="btn-submit" style="background-color: #95a5a6; flex: 1;">Batal</button>
+                            <button type="submit" class="btn-submit" style="background-color: #2ecc71; flex: 2;">Mulai Menabung</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="list-tabungan" class="savings-container"></div>
+            </section>
+
+            <section id="view-laporan" class="view-section">
+                <header class="page-header">
+                    <h2>Analisis Pengeluaran</h2>
+                </header>
+                <div class="report-container">
+                    <div class="filter-box">
+                        <label>Pilih Periode:</label>
+                        <select id="filter-laporan">
+                            <option value="bulanan">30 Hari Terakhir</option>
+                            <option value="mingguan">7 Hari Terakhir</option>
+                            <option value="harian">Hari Ini</option>
+                        </select>
+                    </div>
+                    <div class="canvas-wrapper">
+                        <canvas id="grafik-laporan"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-profil" class="view-section">
+                <header class="page-header">
+                    <h2>Profil & Pengaturan</h2>
+                </header>
+                <div class="card" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); padding: 40px 20px;">
+                    
+                    <div class="profile-header-box">
+                        <span class="material-symbols-rounded" style="font-size: 80px; color: #3498db;">account_circle</span>
+                        <h2 id="user-email" class="user-email-text">Memuat data...</h2>
+                        <p style="color: var(--text-muted); font-size: 13px;">Akun Google Tertaut</p>
+                    </div>
+                    
+                    <h3 style="font-size: 14px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; padding-left: 5px;">Fitur Tambahan</h3>
+                    <div class="settings-list" style="margin-bottom: 30px;">
+                        <button class="btn-setting profile-nav-btn" data-target="view-anggaran">
+                            <span class="material-symbols-rounded" style="color: #f39c12;">account_balance_wallet</span> 
+                            <span style="flex:1; text-align:left; color: #f39c12; font-weight: bold;">Batas Anggaran</span>
+                        </button>
+                        <button class="btn-setting profile-nav-btn" data-target="view-tabungan">
+                            <span class="material-symbols-rounded" style="color: #2ecc71;">savings</span> 
+                            <span style="flex:1; text-align:left; color: #2ecc71; font-weight: bold;">Target Tabungan</span>
+                        </button>
+                    </div>
+
+                    <h3 style="font-size: 14px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; padding-left: 5px;">Pengaturan Sistem</h3>
+                    <div class="settings-list">
+                        <button id="btn-theme-toggle" class="btn-setting">
+                            <span class="material-symbols-rounded" id="theme-icon">dark_mode</span> 
+                            <span id="theme-text" style="flex:1; text-align:left;">Mode Gelap</span>
+                        </button>
+                        
+                        <button id="btn-logout" class="btn-setting">
+                            <span class="material-symbols-rounded" style="color: #e74c3c;">logout</span> 
+                            <span style="flex:1; text-align:left; color: #e74c3c; font-weight: bold;">Keluar Aplikasi</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

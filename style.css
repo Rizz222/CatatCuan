@@ -1,0 +1,242 @@
+/* ================= PENGATURAN TEMA (PALET WARNA) ================= */
+:root {
+    --bg-main: #f4f7f6;
+    --bg-card: #ffffff;
+    --text-main: #333333;
+    --text-muted: #777777;
+    --border-color: #eeeeee;
+    --input-bg: #ffffff;
+    --input-border: #dddddd;
+    --hover-bg: #f0f4f8;
+    --shadow-color: rgba(0,0,0,0.05);
+    
+    --gradient-primary: linear-gradient(135deg, #2b5876 0%, #4e4376 100%);
+}
+
+body.dark-mode {
+    --bg-main: #121212;
+    --bg-card: #1e1e1e;
+    --text-main: #f1f1f1;
+    --text-muted: #aaaaaa;
+    --border-color: #333333;
+    --input-bg: #2c2c2c;
+    --input-border: #444444;
+    --hover-bg: #2a2a2a;
+    --shadow-color: rgba(0,0,0,0.3);
+}
+
+/* RESET & DASAR */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+body { background-color: var(--bg-main); color: var(--text-main); overflow: hidden; transition: background-color 0.3s, color 0.3s; }
+
+/* HALAMAN LOGIN */
+.login-container { height: 100vh; display: flex; justify-content: center; align-items: center; background: var(--gradient-primary); }
+.login-box { background: var(--bg-card); padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 10px 25px var(--shadow-color); width: 90%; max-width: 400px; }
+.login-brand { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px; }
+.login-brand-logo { width: 50px; height: 50px; object-fit: cover; border-radius: 8px; }
+.login-brand h1 { margin-bottom: 0; color: var(--text-main); font-size: 32px; }
+.login-box p { margin-bottom: 30px; color: var(--text-muted); }
+.btn-google { background-color: #4285F4; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: bold; }
+.btn-google b { background: white; color: #4285F4; padding: 2px 7px; border-radius: 50%; }
+
+/* LAYOUT APLIKASI */
+.app-container { display: flex; height: 100vh; width: 100vw; }
+.sidebar { width: 250px; background-color: var(--bg-card); box-shadow: 2px 0 10px var(--shadow-color); display: flex; flex-direction: column; z-index: 100; transition: background-color 0.3s; }
+.brand { padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 12px;}
+.brand-logo { width: 35px; height: 35px; object-fit: cover; border-radius: 6px; }
+.brand h2 { font-size: 20px; color: var(--text-main); margin: 0; }
+.nav-links { list-style: none; padding: 20px 0; flex-grow: 1; overflow-y: auto; }
+.nav-link { padding: 15px 25px; display: flex; align-items: center; gap: 15px; cursor: pointer; color: var(--text-muted); transition: 0.3s; font-weight: bold; }
+.nav-link:hover { background-color: var(--hover-bg); color: #3498db; }
+.nav-link.active { background-color: rgba(52, 152, 219, 0.1); color: #3498db; border-right: 4px solid #3498db; }
+
+/* DESAIN TOMBOL PENGATURAN DI PROFIL */
+.settings-list { display: flex; flex-direction: column; gap: 12px; max-width: 400px; margin: 0 auto; }
+.btn-setting { display: flex; align-items: center; gap: 15px; padding: 16px 20px; background: transparent; border: 1px solid var(--border-color); border-radius: 12px; font-size: 15px; color: var(--text-main); cursor: pointer; transition: 0.2s; width: 100%; }
+.btn-setting:hover { background-color: var(--hover-bg); border-color: #3498db; color: #3498db; }
+.btn-setting .material-symbols-rounded { font-size: 24px; color: var(--text-muted); transition: 0.2s; }
+.btn-setting:hover .material-symbols-rounded { color: #3498db; }
+
+.main-content { flex-grow: 1; overflow-y: auto; background-color: var(--bg-main); position: relative; transition: background-color 0.3s; scroll-behavior: smooth; }
+.view-section { display: none; padding: 30px; max-width: 800px; margin: 0 auto; animation: fadeIn 0.4s ease; }
+.view-section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.page-header { margin-bottom: 25px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; color: var(--text-main); }
+.header-with-options { display: flex; justify-content: space-between; align-items: center; }
+
+/* ================== FITUR PROFIL & TEKS PANJANG (PERBAIKAN OVERFLOW) ================== */
+.profile-header-box {
+    text-align: center;
+    margin-bottom: 30px;
+    width: 100%;
+    overflow: hidden; 
+    padding: 0 10px;
+}
+
+.user-email-text {
+    margin-top: 10px;
+    font-size: clamp(12px, 4vw, 18px); 
+    color: var(--text-main);
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    display: block;
+    width: 100%;
+}
+/* ====================================================================================== */
+
+/* ================== FITUR EXPANDABLE SALDO UTAMA ================== */
+.balance-highlight { 
+    background: var(--gradient-primary); color: white; padding: 30px 25px; 
+    margin-bottom: 15px; border-radius: 12px; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 8px 20px rgba(78, 67, 118, 0.2); overflow: hidden;
+}
+.balance-highlight.expanded { transform: scale(1.02); box-shadow: 0 15px 30px rgba(78, 67, 118, 0.4); }
+.balance-clickable-area { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.balance-clickable-area:hover .expand-icon { background: rgba(255,255,255,0.3); }
+
+.balance-content h3 { font-size: 14px; font-weight: 400; opacity: 0.9; margin-bottom: 5px; }
+.balance-content h2 { font-size: 36px; font-weight: 700; margin-bottom: 5px; }
+.balance-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.2); }
+
+.expand-icon { font-size: 30px; background: rgba(255,255,255,0.15); padding: 5px; border-radius: 50%; transition: transform 0.3s ease, background 0.3s; }
+.balance-highlight.expanded .expand-icon { transform: rotate(180deg); }
+
+.balance-details { margin-top: 15px; animation: fadeIn 0.4s ease; }
+.dashed-line-white { border-top: 1px dashed rgba(255,255,255,0.3); border-bottom: none; border-left: none; border-right: none; margin: 20px 0; }
+.trend-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-size: 13px; font-weight: bold; color: rgba(255,255,255,0.9); }
+.select-trend { background: rgba(255,255,255,0.2); color: white; border: none; padding: 6px 12px; border-radius: 8px; outline: none; font-size: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+.select-trend:hover { background: rgba(255,255,255,0.3); }
+.select-trend option { color: #333; }
+.balance-chart-wrapper { height: 240px; width: 100%; margin-bottom: 20px; } 
+
+.balance-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.stat-box { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; text-align: left; border: 1px solid rgba(255,255,255,0.1); }
+.stat-box p { font-size: 12px; opacity: 0.9; margin-bottom: 3px; font-weight: 500; }
+.stat-box h4 { font-size: 18px; font-weight: 700; }
+
+.card-group-inline { display: flex; gap: 10px; margin-bottom: 25px; }
+.mini-card { flex: 1; display: flex; align-items: center; gap: 12px; padding: 15px; border-radius: 12px; color: white; }
+.mini-card .material-symbols-rounded { font-size: 28px; background: rgba(255,255,255,0.2); padding: 8px; border-radius: 50%; }
+.mini-card-text h3 { font-size: 12px; font-weight: 400; opacity: 0.9; }
+.mini-card-text p { font-size: 16px; font-weight: 600; }
+.income { background-color: #2ecc71; }
+.expense { background-color: #e74c3c; }
+
+/* ================== FITUR ANGGARAN ================== */
+.budget-card {
+    background: var(--bg-card); padding: 25px; border-radius: 12px;
+    box-shadow: 0 5px 15px var(--shadow-color); border: 1px solid var(--border-color);
+    animation: fadeIn 0.4s ease; position: relative; overflow: hidden;
+}
+.budget-header { display: flex; justify-content: space-between; align-items: flex-start; }
+.budget-icon { font-size: 35px; padding: 10px; border-radius: 50%; background: var(--hover-bg); }
+.budget-icon.safe { color: #2ecc71; background: rgba(46,204,113,0.1); }
+.budget-icon.warn { color: #f39c12; background: rgba(243,156,18,0.1); }
+.budget-icon.danger { color: #e74c3c; background: rgba(231,76,60,0.1); }
+
+.budget-progress-bg { width: 100%; height: 20px; background-color: var(--input-bg); border: 1px solid var(--input-border); border-radius: 10px; overflow: hidden; }
+.budget-progress-fill { height: 100%; transition: width 0.8s cubic-bezier(0.25, 0.8, 0.25, 1); border-radius: 10px; }
+.budget-progress-fill.safe { background: linear-gradient(90deg, #2ecc71, #27ae60); }
+.budget-progress-fill.warn { background: linear-gradient(90deg, #f1c40f, #f39c12); }
+.budget-progress-fill.danger { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+
+.budget-sisa-box {
+    margin-top: 15px; padding: 15px; border-radius: 8px; background: var(--hover-bg);
+    text-align: center; font-size: 14px; color: var(--text-main); border: 1px solid var(--border-color);
+}
+.budget-sisa-box strong { font-size: 18px; display: block; margin-top: 5px; color: #3498db; }
+
+/* Form & Inputs */
+.transaction-form, .history-container, .report-container { background: var(--bg-card); padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px var(--shadow-color); transition: background-color 0.3s; }
+.form-group { margin-bottom: 15px; }
+label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; color: var(--text-muted); }
+input, select { width: 100%; padding: 12px; border: 1px solid var(--input-border); border-radius: 8px; font-size: 14px; outline: none; background-color: var(--input-bg); color: var(--text-main); transition: 0.3s; }
+input:focus, select:focus { border-color: #3498db; }
+select { appearance: none; -webkit-appearance: none; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23888" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px; padding-right: 40px; cursor: pointer; }
+.btn-submit { width: 100%; padding: 15px; background-color: #3498db; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+.btn-submit:hover { opacity: 0.9; }
+
+/* Riwayat List */
+.transaction-list { list-style: none; }
+.transaction-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
+.transaction-item:last-child { border-bottom: none; }
+.details { display: flex; flex-direction: column; }
+.details .cat { font-weight: bold; font-size: 14px; color: var(--text-main); }
+.details .note { font-size: 12px; color: var(--text-muted); margin-top: 3px;}
+.action-wrapper { display: flex; align-items: center; gap: 15px; }
+.keluar .amount { color: #e74c3c; font-weight: bold; }
+.masuk .amount { color: #2ecc71; font-weight: bold; }
+
+/* FITUR TABUNGAN */
+.savings-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.saving-card { background: var(--bg-card); padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px var(--shadow-color); border: 1px solid var(--border-color); transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; overflow: hidden; }
+.saving-card.expanded { grid-column: 1 / -1; transform: scale(1.01); border-color: #3498db; box-shadow: 0 15px 30px rgba(0,0,0,0.1); z-index: 10; }
+.saving-clickable-area { cursor: pointer; padding-bottom: 10px; transition: 0.2s; }
+.saving-clickable-area:hover { opacity: 0.8; }
+.saving-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+.saving-title-wrapper { display: flex; flex-direction: column; gap: 8px; }
+.saving-title { font-weight: bold; color: var(--text-main); font-size: 16px; display: flex; align-items: center; gap: 5px; }
+.saving-badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; width: fit-content; }
+.badge-start { background: rgba(52, 152, 219, 0.1); color: #3498db; }
+.badge-mid { background: rgba(241, 196, 15, 0.1); color: #f39c12; }
+.badge-end { background: rgba(46, 204, 113, 0.1); color: #27ae60; }
+.progress-container { width: 100%; background-color: var(--hover-bg); border-radius: 8px; height: 12px; margin-bottom: 8px; overflow: hidden; }
+.progress-bar { height: 100%; background-color: #2ecc71; transition: width 0.5s ease; }
+.saving-stats { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); }
+.saving-details { margin-top: 10px; padding-top: 15px; border-top: 1px dashed var(--border-color); animation: fadeIn 0.4s ease; }
+.saving-details-flex { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+.saving-info-text { flex: 1; min-width: 200px; font-size: 13px; color: var(--text-muted); line-height: 1.8; }
+.saving-info-text strong { color: var(--text-main); }
+.saving-chart-wrapper { flex: 1; min-width: 200px; height: 180px; position: relative; display: flex; justify-content: center; align-items: center; }
+.fund-action-group { display: flex; align-items: stretch; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; overflow: hidden; transition: 0.3s; height: 40px; margin-top: 10px; }
+.fund-action-group:focus-within { border-color: #2ecc71; box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.2); }
+.add-fund-input { flex: 1; border: none; background: transparent; padding: 0 15px; font-size: 13px; outline: none; color: var(--text-main); }
+.btn-submit-fund { background: #2ecc71; color: white; border: none; padding: 0 15px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 18px; }
+.btn-submit-fund:hover { background: #27ae60; }
+
+/* Dropdown Menu Titik 3 */
+.dropdown-container { position: relative; display: inline-block; }
+.btn-dots { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); padding: 0 5px; border-radius: 50%; transition: 0.2s; width: 30px; height: 30px; line-height: 30px; text-align: center; }
+.btn-dots:hover { color: var(--text-main); background-color: var(--hover-bg); }
+.dropdown-menu { display: none; position: absolute; right: 0; top: 100%; background-color: var(--bg-card); min-width: 150px; box-shadow: 0px 5px 15px var(--shadow-color); z-index: 10; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color); }
+.dropdown-menu.show { display: block; animation: fadeIn 0.2s; }
+.dropdown-item { width: 100%; text-align: left; padding: 12px 15px; border: none; background: none; cursor: pointer; font-size: 13px; color: var(--text-main); transition: 0.2s; }
+.dropdown-item:hover { background-color: var(--hover-bg); }
+.text-danger { color: #e74c3c !important; font-weight: bold; }
+
+/* Grafik Utama Laporan */
+.filter-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.filter-box select { width: auto; padding: 8px 15px; }
+.canvas-wrapper { width: 100%; max-width: 400px; margin: 0 auto; }
+
+/* Ikon Modern */
+.material-symbols-rounded { font-size: 24px; font-weight: normal; transition: 0.3s; }
+
+/* RESPONSIVE UNTUK HP */
+@media (max-width: 768px) {
+    .app-container { flex-direction: column; }
+    .sidebar { width: 100%; height: 70px; flex-direction: row; position: fixed; bottom: 0; left: 0; box-shadow: 0 -2px 10px var(--shadow-color); justify-content: space-around; padding: 0; z-index: 1000; }
+    .brand { display: none; } 
+    .nav-links { display: flex; flex-direction: row; padding: 0; width: 100%; justify-content: space-around; }
+    .nav-link { flex: 1; flex-direction: column; gap: 5px; padding: 10px 0; justify-content: center; font-size: 12px; border: none; border-bottom: 3px solid transparent; text-align: center;}
+    .nav-link.active { border-right: none; border-bottom: 3px solid #3498db; background: transparent; }
+    
+    .main-content { padding-bottom: 80px; }
+    .view-section { padding: 15px; }
+    
+    .balance-highlight { padding: 25px 20px; }
+    .balance-content h2 { font-size: 28px; }
+    .balance-chart-wrapper { height: 180px; }
+    .stat-box h4 { font-size: 16px; }
+
+    .card-group-inline { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 25px; }
+    .mini-card { flex-direction: row; justify-content: flex-start; padding: 12px; }
+    .mini-card .material-symbols-rounded { margin-right: 10px; font-size: 20px; padding: 5px; }
+    .mini-card-text h3 { font-size: 11px; margin-bottom: 2px; }
+    .mini-card-text p { font-size: 14px; }
+    .transaction-form, .history-container, .report-container, .budget-card { padding: 20px; }
+    
+    .saving-details-flex { flex-direction: column-reverse; align-items: stretch; }
+    .saving-chart-wrapper { height: 160px; }
+}
