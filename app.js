@@ -1,6 +1,6 @@
-// 1. IMPORT FIREBASE 
+// 1. IMPORT FIREBASE (Perhatikan penambahan 'updateDoc' di baris kedua)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, where, doc, deleteDoc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, where, doc, deleteDoc, setDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
 // 2. CONFIG FIREBASE
@@ -130,7 +130,8 @@ const opsiPengeluaran = `
 `;
 const opsiPemasukan = `
     <option value="uang_saku">Uang Saku dari Orang Tua</option>
-    <option value="hasil_kerja">Hasil Kerja</option>
+    <option value="beasiswa_kse">Pencairan Beasiswa KSE</option>
+    <option value="bantu_jualan">Bantu Usaha Jajanan Pasar Ayah</option>
     <option value="pemasukan_lain">Pemasukan Lainnya</option>
 `;
 
@@ -178,8 +179,8 @@ if (localStorage.getItem('theme') === 'dark') {
     if (logoAplikasi) logoAplikasi.src = 'img/catat cuan putih.png'; 
     if (logoLogin) logoLogin.src = 'img/catat cuan putih.png'; 
 } else {
-    if (logoAplikasi) logoAplikasi.src = 'img/catat cuan hitam.png'; 
-    if (logoLogin) logoLogin.src = 'img/catat cuan hitam.png'; 
+    if (logoAplikasi) logoAplikasi.src = 'img/catat cuan hitam.jpg'; 
+    if (logoLogin) logoLogin.src = 'img/catat cuan hitam.jpg'; 
 }
 
 btnThemeToggle.addEventListener('click', () => {
@@ -194,8 +195,8 @@ btnThemeToggle.addEventListener('click', () => {
         localStorage.setItem('theme', 'light');
         if(themeIcon) themeIcon.innerText = 'dark_mode';
         if(themeText) themeText.innerText = 'Mode Gelap';
-        if (logoAplikasi) logoAplikasi.src = 'img/catat cuan hitam.png';
-        if (logoLogin) logoLogin.src = 'img/catat cuan hitam.png';
+        if (logoAplikasi) logoAplikasi.src = 'img/catat cuan hitam.jpg';
+        if (logoLogin) logoLogin.src = 'img/catat cuan hitam.jpg';
     }
     
     if (document.getElementById('view-laporan').classList.contains('active')) renderGrafik();
@@ -672,7 +673,10 @@ document.addEventListener('click', async (e) => {
                     alert(`Berhasil! Saldo dompet terpotong Rp ${nominalTambah.toLocaleString('id-ID')} untuk tabungan.`);
                 } else alert("Berhasil top-up dari sumber luar!");
                 inputField.value = ""; 
-            } catch (error) { alert("Gagal menyimpan tabungan."); }
+            } catch (error) { 
+                console.error(error);
+                alert("Gagal menyimpan tabungan."); 
+            }
         } else {
             const inputGroup = inputField.parentElement;
             inputGroup.style.borderColor = '#e74c3c';
