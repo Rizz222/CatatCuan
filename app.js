@@ -1,4 +1,4 @@
-// 1. IMPORT FIREBASE (Perhatikan penambahan 'updateDoc' di baris kedua)
+// 1. IMPORT FIREBASE (Sudah dilengkapi dengan updateDoc dan setDoc)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, where, doc, deleteDoc, setDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -141,7 +141,7 @@ jenisInput.addEventListener('change', function() {
 });
 jenisInput.dispatchEvent(new Event('change'));
 
-// ================== LOGIKA NAVIGASI TERPUSAT (SIDEBAR + PROFIL) ==================
+// ================== LOGIKA NAVIGASI TERPUSAT ==================
 const navLinks = document.querySelectorAll('.nav-link, .profile-nav-btn');
 const views = document.querySelectorAll('.view-section');
 
@@ -312,7 +312,7 @@ function muatDataTransaksi(userId) {
     });
 }
 
-// ================== LOGIKA FITUR ANGGARAN (STOPWATCH SYSTEM) ==================
+// ================== LOGIKA FITUR ANGGARAN ==================
 document.getElementById('form-anggaran').addEventListener('submit', async function(e) {
     e.preventDefault();
     if (!currentUser) return;
@@ -445,7 +445,6 @@ function renderAnggaranUI() {
         document.getElementById('teks-sisa-anggaran').innerHTML = `<span style="color:#e74c3c">Minus Rp ${Math.abs(sisa).toLocaleString('id-ID')}</span>`;
     }
 }
-
 
 // ================== LOGIKA FITUR TABUNGAN ==================
 const btnTampilForm = document.getElementById('btn-tampil-form-tabungan');
@@ -628,19 +627,27 @@ function muatDataTabungan(userId) {
     });
 }
 
-// ================== LOGIKA KLIK GLOBAL ==================
+// ================== LOGIKA KLIK GLOBAL (YANG SUDAH DIPERBAIKI SANGAT AMAN) ==================
 document.addEventListener('click', async (e) => {
-    const isActionButton = e.target.classList.contains('btn-action');
-    if (!isActionButton) document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
-    else {
-        document.querySelectorAll('.dropdown-menu').forEach(menu => { if (menu !== e.target.nextElementSibling) menu.classList.remove('show'); });
-        e.target.nextElementSibling.classList.toggle('show');
+    
+    // 1. Logika Menutup Menu Dropdown Titik Tiga
+    const isActionButton = e.target.closest('.btn-action');
+    if (!isActionButton) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => menu.classList.remove('show'));
+    } else {
+        const dropdownMenu = isActionButton.nextElementSibling;
+        document.querySelectorAll('.dropdown-menu').forEach(menu => { 
+            if (menu !== dropdownMenu) menu.classList.remove('show'); 
+        });
+        if (dropdownMenu) dropdownMenu.classList.toggle('show');
     }
 
-    if (e.target.classList.contains('btn-edit-fund')) {
-        editTabunganId = e.target.getAttribute('data-id');
-        document.getElementById('nama-tabungan').value = e.target.getAttribute('data-nama');
-        document.getElementById('target-tabungan').value = e.target.getAttribute('data-target');
+    // 2. Logika Edit Tabungan
+    const btnEditFund = e.target.closest('.btn-edit-fund');
+    if (btnEditFund) {
+        editTabunganId = btnEditFund.getAttribute('data-id');
+        document.getElementById('nama-tabungan').value = btnEditFund.getAttribute('data-nama');
+        document.getElementById('target-tabungan').value = btnEditFund.getAttribute('data-target');
         document.getElementById('awal-tabungan').parentElement.style.display = 'none'; 
         document.querySelector('#container-form-tabungan h2').innerText = "Edit Target Tabungan";
         document.querySelector('#form-tabungan button[type="submit"]').innerText = "Simpan Perubahan";
@@ -648,18 +655,34 @@ document.addEventListener('click', async (e) => {
         document.getElementById('btn-tampil-form-tabungan').style.display = 'none';
     }
 
-    if (e.target.classList.contains('btn-delete-fund')) {
-        if (confirm("Yakin ingin menghapus target tabungan ini?")) await deleteDoc(doc(db, "tabungan", e.target.getAttribute('data-id')));
+    // 3. Logika Hapus Tabungan
+    const btnDelFund = e.target.closest('.btn-delete-fund');
+    if (btnDelFund) {
+        const id = btnDelFund.getAttribute('data-id');
+        if (id && confirm("Yakin ingin menghapus target tabungan ini?")) {
+            await deleteDoc(doc(db, "tabungan", id));
+        }
     }
 
-    if (e.target.classList.contains('btn-delete-item')) {
-        if (confirm("Hapus transaksi ini?")) await deleteDoc(doc(db, "transaksi", e.target.getAttribute('data-id')));
+    // 4. Logika Hapus Riwayat Transaksi
+    const btnDelTrx = e.target.closest('.btn-delete-item');
+    if (btnDelTrx) {
+        const id = btnDelTrx.getAttribute('data-id');
+        if (id && confirm("Hapus transaksi ini?")) {
+            await deleteDoc(doc(db, "transaksi", id));
+        }
     }
 
-    if (e.target.classList.contains('btn-submit-fund')) {
-        const docId = e.target.getAttribute('data-id');
-        const terkumpulSaatIni = parseInt(e.target.getAttribute('data-terkumpul'));
-        const namaTabungan = e.target.getAttribute('data-nama');
+    // 5. Logika Simpan Top Up Tabungan (PERBAIKAN ERROR indexOf DISINI)
+    const btnSubmitFund = e.target.closest('.btn-submit-fund');
+    if (btnSubmitFund) {
+        const docId = btnSubmitFund.getAttribute('data-id');
+        
+        // Pencegahan agar Firebase tidak memproses ID yang null
+        if (!docId) return; 
+
+        const terkumpulSaatIni = parseInt(btnSubmitFund.getAttribute('data-terkumpul'));
+        const namaTabungan = btnSubmitFund.getAttribute('data-nama');
         const inputField = document.getElementById(`input-fund-${docId}`);
         const sumberField = document.getElementById(`sumber-fund-${docId}`);
         const nominalTambah = parseInt(inputField.value);
@@ -667,23 +690,37 @@ document.addEventListener('click', async (e) => {
 
         if (!isNaN(nominalTambah) && nominalTambah > 0) {
             try {
+                // Update ke Firebase
                 await updateDoc(doc(db, "tabungan", docId), { terkumpul: terkumpulSaatIni + nominalTambah });
+                
+                // Jika potong dompet, catat ke riwayat pengeluaran
                 if (sumberDana === 'saldo') {
-                    await addDoc(collection(db, "transaksi"), { uid: currentUser.uid, jenis: 'pengeluaran', kategori: 'tabungan', nominal: nominalTambah, catatan: `Nabung: ${namaTabungan}`, waktu: new Date() });
-                    alert(`Berhasil! Saldo dompet terpotong Rp ${nominalTambah.toLocaleString('id-ID')} untuk tabungan.`);
-                } else alert("Berhasil top-up dari sumber luar!");
+                    await addDoc(collection(db, "transaksi"), { 
+                        uid: currentUser.uid, 
+                        jenis: 'pengeluaran', 
+                        kategori: 'tabungan', 
+                        nominal: nominalTambah, 
+                        catatan: `Nabung: ${namaTabungan}`, 
+                        waktu: new Date() 
+                    });
+                    alert(`Berhasil! Saldo dompet terpotong Rp ${nominalTambah.toLocaleString('id-ID')} untuk masuk ke tabungan.`);
+                } else {
+                    alert("Berhasil top-up dari sumber luar!");
+                }
                 inputField.value = ""; 
             } catch (error) { 
-                console.error(error);
-                alert("Gagal menyimpan tabungan."); 
+                console.error("Gagal topup:", error);
+                alert("Gagal memproses top-up. Pastikan koneksi stabil."); 
             }
         } else {
+            // Efek merah jika input kosong
             const inputGroup = inputField.parentElement;
             inputGroup.style.borderColor = '#e74c3c';
             setTimeout(() => inputGroup.style.borderColor = 'var(--input-border)', 2000);
         }
     }
 
+    // 6. Logika Reset Semua Data Dompet
     if (e.target.id === 'btn-reset-data') {
         if (confirm("PERINGATAN!\n\nApakah kamu yakin mereset SEMUA SALDO DAN RIWAYAT?")) {
             try {
