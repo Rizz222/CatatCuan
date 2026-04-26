@@ -130,8 +130,6 @@ const opsiPengeluaran = `
 `;
 const opsiPemasukan = `
     <option value="uang_saku">Uang Saku dari Orang Tua</option>
-    <option value="beasiswa_kse">Pencairan Beasiswa KSE</option>
-    <option value="bantu_jualan">Bantu Usaha Jajanan Pasar Ayah</option>
     <option value="pemasukan_lain">Pemasukan Lainnya</option>
 `;
 
