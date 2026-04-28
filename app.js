@@ -1,4 +1,4 @@
-// 1. IMPORT FIREBASE (Sudah dilengkapi dengan updateDoc dan setDoc)
+// 1. IMPORT FIREBASE 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, where, doc, deleteDoc, setDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -177,8 +177,8 @@ if (localStorage.getItem('theme') === 'dark') {
     if (logoAplikasi) logoAplikasi.src = 'img/catat cuan putih.png'; 
     if (logoLogin) logoLogin.src = 'img/catat cuan putih.png'; 
 } else {
-    if (logoAplikasi) logoAplikasi.src = 'img/catat cuan hitam.jpg'; 
-    if (logoLogin) logoLogin.src = 'img/catat cuan hitam.jpg'; 
+    if (logoAplikasi) logoAplikasi.src = 'img/catat cuan hitam.png'; 
+    if (logoLogin) logoLogin.src = 'img/catat cuan hitam.png'; 
 }
 
 btnThemeToggle.addEventListener('click', () => {
@@ -193,8 +193,8 @@ btnThemeToggle.addEventListener('click', () => {
         localStorage.setItem('theme', 'light');
         if(themeIcon) themeIcon.innerText = 'dark_mode';
         if(themeText) themeText.innerText = 'Mode Gelap';
-        if (logoAplikasi) logoAplikasi.src = 'img/catat cuan hitam.jpg';
-        if (logoLogin) logoLogin.src = 'img/catat cuan hitam.jpg';
+        if (logoAplikasi) logoAplikasi.src = 'img/catat cuan hitam.png';
+        if (logoLogin) logoLogin.src = 'img/catat cuan hitam.png';
     }
     
     if (document.getElementById('view-laporan').classList.contains('active')) renderGrafik();
@@ -252,7 +252,7 @@ document.getElementById('form-transaksi').addEventListener('submit', async funct
     } catch (error) { console.error("Error: ", error); }
 });
 
-// ================== LOGIKA BACA DATA TRANSAKSI ==================
+// ================== LOGIKA BACA DATA TRANSAKSI (DENGAN GROUPING ACCORDION) ==================
 let unsubscribeTrx = null; 
 
 function muatDataTransaksi(userId) {
@@ -263,35 +263,87 @@ function muatDataTransaksi(userId) {
         listRiwayat.innerHTML = ''; 
         let totalSaldo = 0; let totalMasuk = 0; let totalKeluar = 0;
         semuaDataTransaksi = []; 
+        
+        // Objek untuk mengelompokkan data berdasarkan Bulan & Tahun
+        const groupedData = {};
+        const groupKeys = [];
 
         snapshot.forEach((doc) => {
             const data = doc.data();
-            semuaDataTransaksi.push({ ...data, waktu: data.waktu.toDate() });
+            const dateObj = data.waktu.toDate();
+            const id = doc.id;
+            
+            semuaDataTransaksi.push({ ...data, waktu: dateObj, id: id });
 
             if (data.jenis === 'pemasukan') { totalMasuk += data.nominal; totalSaldo += data.nominal; } 
             else { totalKeluar += data.nominal; totalSaldo -= data.nominal; }
 
-            const li = document.createElement('li');
-            li.className = `transaction-item ${data.jenis === 'pengeluaran' ? 'keluar' : 'masuk'}`;
-            li.innerHTML = `
-                <div class="details">
-                    <span class="cat">${data.kategori.replace(/_/g, ' ').toUpperCase()}</span>
-                    <span class="note">${data.catatan}</span>
-                    <span class="note" style="font-size:10px; opacity:0.7;">${data.waktu.toDate().toLocaleDateString('id-ID')}</span>
-                </div>
-                <div class="action-wrapper">
-                    <span class="amount">${data.jenis === 'pengeluaran' ? '-' : '+'} Rp ${data.nominal.toLocaleString('id-ID')}</span>
-                    <div class="dropdown-container">
-                        <button class="btn-dots btn-action" data-id="${doc.id}">&#8942;</button>
-                        <div class="dropdown-menu">
-                            <button class="dropdown-item text-danger btn-delete-item" data-id="${doc.id}">Hapus Transaksi</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            listRiwayat.appendChild(li);
+            // Menentukan format nama grup (Contoh: "April 2026")
+            const monthYear = dateObj.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
+
+            if (!groupedData[monthYear]) {
+                groupedData[monthYear] = [];
+                groupKeys.push(monthYear); // Simpan urutan agar grup terbaru ada di atas
+            }
+            groupedData[monthYear].push({ ...data, id: id, waktu: dateObj });
         });
 
+        // Loop untuk membuat elemen Accordion tiap bulan
+        groupKeys.forEach((monthYear, index) => {
+            const groupDiv = document.createElement('div');
+            // Menjadikan grup paling atas (indeks 0 / bulan terbaru) otomatis terbuka
+            const isFirstGroup = index === 0; 
+            groupDiv.className = `history-group ${isFirstGroup ? 'expanded' : ''}`;
+
+            const transactions = groupedData[monthYear];
+            let listHTML = '';
+
+            transactions.forEach(trx => {
+                listHTML += `
+                    <div class="transaction-item ${trx.jenis === 'pengeluaran' ? 'keluar' : 'masuk'}">
+                        <div class="details">
+                            <span class="cat">${trx.kategori.replace(/_/g, ' ').toUpperCase()}</span>
+                            <span class="note">${trx.catatan}</span>
+                            <span class="note" style="font-size:10px; opacity:0.7;">${trx.waktu.toLocaleDateString('id-ID')}</span>
+                        </div>
+                        <div class="action-wrapper">
+                            <span class="amount">${trx.jenis === 'pengeluaran' ? '-' : '+'} Rp ${trx.nominal.toLocaleString('id-ID')}</span>
+                            <div class="dropdown-container">
+                                <button class="btn-dots btn-action" data-id="${trx.id}">&#8942;</button>
+                                <div class="dropdown-menu">
+                                    <button class="dropdown-item text-danger btn-delete-item" data-id="${trx.id}">Hapus Transaksi</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            groupDiv.innerHTML = `
+                <div class="history-group-header">
+                    <span>
+                        <span class="material-symbols-rounded" style="font-size: 20px; color: #3498db;">calendar_month</span> 
+                        ${monthYear}
+                    </span>
+                    <span class="material-symbols-rounded expand-icon">expand_more</span>
+                </div>
+                <div class="group-content" style="display: ${isFirstGroup ? 'block' : 'none'};">
+                    ${listHTML}
+                </div>
+            `;
+
+            // Memberikan event listener agar baris judul bulan bisa di-klik untuk dropdown
+            const header = groupDiv.querySelector('.history-group-header');
+            const content = groupDiv.querySelector('.group-content');
+            header.addEventListener('click', () => {
+                groupDiv.classList.toggle('expanded');
+                content.style.display = groupDiv.classList.contains('expanded') ? 'block' : 'none';
+            });
+
+            listRiwayat.appendChild(groupDiv);
+        });
+
+        // Update teks ringkasan saldo
         document.getElementById('total-saldo').innerText = `Rp ${totalSaldo.toLocaleString('id-ID')}`;
         document.getElementById('total-masuk').innerText = `Rp ${totalMasuk.toLocaleString('id-ID')}`;
         document.getElementById('total-keluar').innerText = `Rp ${totalKeluar.toLocaleString('id-ID')}`;
@@ -625,7 +677,7 @@ function muatDataTabungan(userId) {
     });
 }
 
-// ================== LOGIKA KLIK GLOBAL (YANG SUDAH DIPERBAIKI SANGAT AMAN) ==================
+// ================== LOGIKA KLIK GLOBAL ==================
 document.addEventListener('click', async (e) => {
     
     // 1. Logika Menutup Menu Dropdown Titik Tiga
@@ -671,12 +723,10 @@ document.addEventListener('click', async (e) => {
         }
     }
 
-    // 5. Logika Simpan Top Up Tabungan (PERBAIKAN ERROR indexOf DISINI)
+    // 5. Logika Simpan Top Up Tabungan
     const btnSubmitFund = e.target.closest('.btn-submit-fund');
     if (btnSubmitFund) {
         const docId = btnSubmitFund.getAttribute('data-id');
-        
-        // Pencegahan agar Firebase tidak memproses ID yang null
         if (!docId) return; 
 
         const terkumpulSaatIni = parseInt(btnSubmitFund.getAttribute('data-terkumpul'));
@@ -688,10 +738,8 @@ document.addEventListener('click', async (e) => {
 
         if (!isNaN(nominalTambah) && nominalTambah > 0) {
             try {
-                // Update ke Firebase
                 await updateDoc(doc(db, "tabungan", docId), { terkumpul: terkumpulSaatIni + nominalTambah });
                 
-                // Jika potong dompet, catat ke riwayat pengeluaran
                 if (sumberDana === 'saldo') {
                     await addDoc(collection(db, "transaksi"), { 
                         uid: currentUser.uid, 
@@ -711,7 +759,6 @@ document.addEventListener('click', async (e) => {
                 alert("Gagal memproses top-up. Pastikan koneksi stabil."); 
             }
         } else {
-            // Efek merah jika input kosong
             const inputGroup = inputField.parentElement;
             inputGroup.style.borderColor = '#e74c3c';
             setTimeout(() => inputGroup.style.borderColor = 'var(--input-border)', 2000);
