@@ -65,25 +65,8 @@ body { background-color: var(--bg-main); color: var(--text-main); overflow: hidd
 .header-with-options { display: flex; justify-content: space-between; align-items: center; }
 
 /* ================== FITUR PROFIL & TEKS PANJANG (PERBAIKAN OVERFLOW) ================== */
-.profile-header-box {
-    text-align: center;
-    margin-bottom: 30px;
-    width: 100%;
-    overflow: hidden; 
-    padding: 0 10px;
-}
-
-.user-email-text {
-    margin-top: 10px;
-    font-size: clamp(12px, 4vw, 18px); 
-    color: var(--text-main);
-    white-space: nowrap; 
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-    display: block;
-    width: 100%;
-}
-/* ====================================================================================== */
+.profile-header-box { text-align: center; margin-bottom: 30px; width: 100%; overflow: hidden; padding: 0 10px; }
+.user-email-text { margin-top: 10px; font-size: clamp(12px, 4vw, 18px); color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; width: 100%; }
 
 /* ================== FITUR EXPANDABLE SALDO UTAMA ================== */
 .balance-highlight { 
@@ -124,11 +107,7 @@ body { background-color: var(--bg-main); color: var(--text-main); overflow: hidd
 .expense { background-color: #e74c3c; }
 
 /* ================== FITUR ANGGARAN ================== */
-.budget-card {
-    background: var(--bg-card); padding: 25px; border-radius: 12px;
-    box-shadow: 0 5px 15px var(--shadow-color); border: 1px solid var(--border-color);
-    animation: fadeIn 0.4s ease; position: relative; overflow: hidden;
-}
+.budget-card { background: var(--bg-card); padding: 25px; border-radius: 12px; box-shadow: 0 5px 15px var(--shadow-color); border: 1px solid var(--border-color); animation: fadeIn 0.4s ease; position: relative; overflow: hidden; }
 .budget-header { display: flex; justify-content: space-between; align-items: flex-start; }
 .budget-icon { font-size: 35px; padding: 10px; border-radius: 50%; background: var(--hover-bg); }
 .budget-icon.safe { color: #2ecc71; background: rgba(46,204,113,0.1); }
@@ -141,10 +120,7 @@ body { background-color: var(--bg-main); color: var(--text-main); overflow: hidd
 .budget-progress-fill.warn { background: linear-gradient(90deg, #f1c40f, #f39c12); }
 .budget-progress-fill.danger { background: linear-gradient(90deg, #e74c3c, #c0392b); }
 
-.budget-sisa-box {
-    margin-top: 15px; padding: 15px; border-radius: 8px; background: var(--hover-bg);
-    text-align: center; font-size: 14px; color: var(--text-main); border: 1px solid var(--border-color);
-}
+.budget-sisa-box { margin-top: 15px; padding: 15px; border-radius: 8px; background: var(--hover-bg); text-align: center; font-size: 14px; color: var(--text-main); border: 1px solid var(--border-color); }
 .budget-sisa-box strong { font-size: 18px; display: block; margin-top: 5px; color: #3498db; }
 
 /* Form & Inputs */
@@ -157,8 +133,17 @@ select { appearance: none; -webkit-appearance: none; background-image: url('data
 .btn-submit { width: 100%; padding: 15px; background-color: #3498db; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
 .btn-submit:hover { opacity: 0.9; }
 
-/* Riwayat List */
-.transaction-list { list-style: none; }
+
+/* ================== RIWAYAT LIST (GROUP BULAN TAHUN) ================== */
+.history-group { border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 15px; background: var(--bg-card); overflow: hidden; transition: all 0.3s ease; }
+.history-group-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; background: var(--hover-bg); cursor: pointer; font-weight: bold; font-size: 15px; color: var(--text-main); transition: 0.3s; }
+.history-group-header:hover { background: rgba(52, 152, 219, 0.1); }
+.history-group-header span { display: flex; align-items: center; gap: 10px; }
+.history-group-header .expand-icon { font-size: 24px; color: var(--text-muted); transition: transform 0.3s ease; background: transparent; padding: 0; }
+.history-group.expanded .history-group-header { border-bottom: 1px dashed var(--border-color); }
+.history-group.expanded .expand-icon { transform: rotate(180deg); color: #3498db; }
+.group-content { padding: 0 20px; animation: fadeIn 0.3s ease; }
+
 .transaction-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid var(--border-color); }
 .transaction-item:last-child { border-bottom: none; }
 .details { display: flex; flex-direction: column; }
@@ -235,7 +220,10 @@ select { appearance: none; -webkit-appearance: none; background-image: url('data
     .mini-card .material-symbols-rounded { margin-right: 10px; font-size: 20px; padding: 5px; }
     .mini-card-text h3 { font-size: 11px; margin-bottom: 2px; }
     .mini-card-text p { font-size: 14px; }
+    
     .transaction-form, .history-container, .report-container, .budget-card { padding: 20px; }
+    .history-group-header { padding: 12px 15px; font-size: 14px; }
+    .group-content { padding: 0 15px; }
     
     .saving-details-flex { flex-direction: column-reverse; align-items: stretch; }
     .saving-chart-wrapper { height: 160px; }
